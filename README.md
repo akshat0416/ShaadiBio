@@ -4,7 +4,7 @@ Full-stack SaaS-style web app to create, save, and download marriage biodata PDF
 
 ### Live Deployment
 
-- **Frontend**: [https://shaadi-bio-git-main-akshats-projects-a071b71d.vercel.app](https://shaadi-bio-git-main-akshats-projects-a071b71d.vercel.app) (Vercel)
+- **Frontend**: [https://shaadi-bio-bay.vercel.app/](https://shaadi-bio-bay.vercel.app/) (Vercel)
 - **Backend API**: [https://shaadibio-backend-14fu.onrender.com](https://shaadibio-backend-14fu.onrender.com) (Render)
 
 ### Tech stack
