@@ -111,7 +111,7 @@ npm run dev
 Open:
 
 - `http://localhost:5173` (local)
-- [Live Frontend](https://shaadi-bio-git-main-akshats-projects-a071b71d.vercel.app) (production)
+- [Live Frontend](https://shaadi-bio-bay.vercel.app/) (production)
 
 ---
 
