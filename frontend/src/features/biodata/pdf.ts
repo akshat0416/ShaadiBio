@@ -4,7 +4,11 @@ type PdfOptions = {
   margin?: number | number[]
   filename?: string
   image?: { type?: 'png' | 'jpeg' | 'webp'; quality?: number }
-  html2canvas?: { scale?: number; useCORS?: boolean }
+  html2canvas?: {
+    scale?: number
+    useCORS?: boolean
+    backgroundColor?: string
+  }
   jsPDF?: { unit?: string; format?: string; orientation?: string }
 }
 
@@ -27,17 +31,18 @@ export async function downloadElementAsPdf(args: {
 }) {
   const html2pdfFn = html2pdf as unknown as Html2PdfFn
 
-type PdfOptions = {
-  margin?: number | number[]
-  filename?: string
-  image?: { type?: 'png' | 'jpeg' | 'webp'; quality?: number }
-  html2canvas?: { 
-    scale?: number
-    useCORS?: boolean
-    backgroundColor?: string
+  const opt: PdfOptions = {
+    margin: 0,
+    filename: args.filename,
+    image: { type: 'jpeg', quality: 1.0 },
+    html2canvas: {
+      scale: 4, // good balance of quality & size
+      useCORS: true,
+      backgroundColor: '#ffffff'
+    },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }
-  jsPDF?: { unit?: string; format?: string; orientation?: string }
-}
+
   let target: HTMLElement = args.element
   let cleanup: (() => void) | undefined
 
@@ -51,7 +56,7 @@ type PdfOptions = {
     const clone = args.element.cloneNode(true) as HTMLElement
     wrapper.appendChild(clone)
 
-    const createWatermark = (top: string, opacity: string = '0.08') => {
+    const createWatermark = (top: string, opacity = '0.08') => {
       const overlay = document.createElement('div')
       overlay.textContent = args.watermarkText!
       overlay.style.position = 'absolute'
@@ -73,38 +78,40 @@ type PdfOptions = {
     }
 
     wrapper.appendChild(createWatermark('20%'))
-    wrapper.appendChild(createWatermark('50%', '0.12')) // slightly darker middle one
+    wrapper.appendChild(createWatermark('50%', '0.12'))
     wrapper.appendChild(createWatermark('80%'))
 
     document.body.appendChild(wrapper)
 
     target = wrapper
-    cleanup = () => {
-      document.body.removeChild(wrapper)
-    }
+    cleanup = () => document.body.removeChild(wrapper)
   }
 
   try {
     if (args.password) {
       const pdfBlob = await html2pdfFn().set(opt).from(target).output('blob')
+
       const formData = new FormData()
       formData.append('pdf', pdfBlob, args.filename)
       formData.append('password', args.password)
 
       const res = await fetch(`${API_ORIGIN}/api/pdf/encrypt`, {
         method: 'POST',
-        body: formData,
+        body: formData
       })
+
       if (!res.ok) throw new Error('Failed to encrypt PDF')
 
       const encryptedBlob = await res.blob()
       const url = URL.createObjectURL(encryptedBlob)
+
       const a = document.createElement('a')
       a.href = url
       a.download = args.filename
       document.body.appendChild(a)
       a.click()
       a.remove()
+
       URL.revokeObjectURL(url)
     } else {
       await html2pdfFn().set(opt).from(target).save()
@@ -113,4 +120,3 @@ type PdfOptions = {
     if (cleanup) cleanup()
   }
 }
-
