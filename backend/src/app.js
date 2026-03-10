@@ -17,8 +17,9 @@ function createApp({ jwtSecret, clientOrigin, uploadDir }) {
   app.use(
   cors({
     origin: [
-      'http://localhost:5173',
-      'https://shaadi-bio-akshats-projects-a071b71d.vercel.app',
+      "http://localhost:5173",
+      "https://shaadi-bio-akshats-projects-a071b71d.vercel.app",
+      "https://shaadi-bio-bay.vercel.app"
     ],
     credentials: true,
   })
