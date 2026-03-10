@@ -27,19 +27,17 @@ export async function downloadElementAsPdf(args: {
 }) {
   const html2pdfFn = html2pdf as unknown as Html2PdfFn
 
-  const opt: PdfOptions = {
-    margin: 0,
-    filename: args.filename,
-    image: { type: 'jpeg' as const, quality: 1.0 },
-    html2canvas: {
-      scale: 5, // 5x scale for ultra high resolution
-      useCORS: true, // Allow cross-origin images
-      allowTaint: true, // Allow tainted images from local sources
-      backgroundColor: '#ffffff', // Ensure white background
-    },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  }
-
+const opt: PdfOptions = {
+  margin: 0,
+  filename: args.filename,
+  image: { type: 'jpeg' as const, quality: 1.0 },
+  html2canvas: {
+    scale: 5, // ultra high resolution
+    useCORS: true, // allow cross-origin images
+    backgroundColor: '#ffffff', // ensure white background
+  },
+  jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+}
   let target: HTMLElement = args.element
   let cleanup: (() => void) | undefined
 
