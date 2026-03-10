@@ -15,11 +15,14 @@ function createApp({ jwtSecret, clientOrigin, uploadDir }) {
   const app = express()
 
   app.use(
-    cors({
-      origin: clientOrigin || true,
-      credentials: true,
-    }),
-  )
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'https://shaadi-bio-akshats-projects-a071b71d.vercel.app',
+    ],
+    credentials: true,
+  })
+)
   app.use(morgan('dev'))
   app.use(express.json({ limit: '2mb' }))
 
